@@ -1,0 +1,1 @@
+export const NebulaVoteHubAddresses = { "31337": { address: "0x0000000000000000000000000000000000000000" }, "11155111": { address: "0x769bD81246E65e9B05f0e9c28A5c1c790c1A1D4D" } } as const;

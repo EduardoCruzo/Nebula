@@ -1,0 +1,5 @@
+# Ignore builds and deps
+node_modules
+**/node_modules
+**/.next
+**/out

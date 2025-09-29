@@ -1,0 +1,46 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    env:
+      # 自动推导 basePath 所需变量（next.config.ts 会读取 GITHUB_REPOSITORY）
+      GITHUB_REPOSITORY: ${{ github.repository }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: action/nebula-frontend/package-lock.json
+
+      - name: Install deps (frontend)
+        working-directory: action/nebula-frontend
+        run: npm ci --no-audit --no-fund
+
+      - name: Build (static export)
+        working-directory: action/nebula-frontend
+        run: npm run build
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: action/nebula-frontend/out
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
